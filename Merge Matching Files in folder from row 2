@@ -1,0 +1,24 @@
+function importData() {
+  var folderId = "INSERT FOLDER HERE"; 
+  var sheet = SpreadsheetApp.getActiveSheet(); 
+  var files = DriveApp.getFolderById(folderId).getFiles(); 
+  var data = []; 
+  
+  while (files.hasNext()) { 
+    var file = files.next();
+    var name = file.getName();
+    
+    if (name.indexOf(".csv") !== -1) { 
+      var csv = file.getBlob().getDataAsString(); 
+      
+         var rows = csv.match(/[^\r\n]+/g);
+      
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i].split(","); 
+        data.push(row); 
+      }
+    }
+  }
+  
+  sheet.getRange(2, 1, data.length, data[0].length).setValues(data); 
+}
